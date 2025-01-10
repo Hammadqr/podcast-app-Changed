@@ -1,0 +1,15 @@
+@media (max-width: 768px) {
+    .container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    
+    .ml-64 {
+      margin-left: 0;
+    }
+  
+    .scroll-button {
+      display: none;
+    }
+  }
+  

@@ -1,0 +1,8 @@
+culd command for registrarion checking:
+
+curl -X POST http://localhost:3001/api/auth/register -H "Content-Type: application/json" -d "{\"name\":\"John Doe\", \"username\":\"johndoe\", \"email\":\"john.doe@example.com\", \"password\":\"password123\"}"
+
+
+Curl command for the login:
+
+curl -X POST http://localhost:3000/login -H "Content-Type: application/json" -d "{\"username\":\"dexter1032\",\"password\":\"$2a$10$7rxzBQaYsrijQukjAXmZIurHmOl8btvF1DZecii6y5okCm7aFJrLS\"}"
