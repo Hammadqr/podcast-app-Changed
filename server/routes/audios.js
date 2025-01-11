@@ -22,7 +22,7 @@ router.post('/upload', upload.single('audio'), async (req, res) => {
     const newAudio = new Audio({
       title: req.body.title,
       description: req.body.description,
-      filePath: req.file.path,
+      filePath: req.file.audio[0],
       fileName: req.file.filename,
       cloudinaryUrl: result.secure_url,  // Save the Cloudinary URL to the database
     });
