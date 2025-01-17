@@ -1,16 +1,14 @@
+// filepath: /e:/University/podcast-app-branch_1/server/models/podcast.js
 import mongoose from 'mongoose';
 
-const AudioSchema = new mongoose.Schema(
-  {
-    title: { type: String, required: true },
-    description: { type: String, required: false },
-    filePath: { type: String, required: true },
-    fileName: { type: String, required: true },
-    uploadDate: { type: Date, default: Date.now },
-  },
-  { timestamps: true }
-);
+const podcastSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  album: { type: String, required: true },
+  audioUrl: { type: String, required: true },
+  imageUrl: { type: String, required: true },
+});
 
-const Audio = mongoose.model('Audio', AudioSchema);
+const podcastModel = mongoose.model('Podcast', podcastSchema);
 
-export default Audio;
+export default podcastModel;

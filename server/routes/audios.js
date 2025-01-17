@@ -1,8 +1,7 @@
-// filepath: /c:/Users/Hammad/Documents/podcast-app/server/routes/audios.js
 import express from 'express';
 import { v2 as cloudinary } from 'cloudinary';
-import Audio from '../models/audio.js';  // Import the Audio model
-import upload from '../middleware/multer.js';  // Import the custom multer configuration
+import Audio from '../models/audio.js';
+import upload from '../middleware/multer.js';
 
 const router = express.Router();
 
@@ -24,7 +23,7 @@ router.post('/upload', upload.single('audio'), async (req, res) => {
       description: req.body.description,
       filePath: req.file.path,
       fileName: req.file.filename,
-      cloudinaryUrl: result.secure_url,  // Save the Cloudinary URL to the database
+      cloudinaryUrl: result.secure_url,
     });
 
     await newAudio.save();
@@ -32,6 +31,73 @@ router.post('/upload', upload.single('audio'), async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error uploading audio' });
+  }
+});
+
+// Route to get all audio files
+router.get('/', async (req, res) => {
+  try {
+    const audios = await Audio.find().sort({ uploadDate: -1 }); // Sort by upload date, newest first
+    res.status(200).json(audios);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching audio files' });
+  }
+});
+
+// Route to get a single audio file by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const audio = await Audio.findById(req.params.id);
+    if (!audio) {
+      return res.status(404).json({ message: 'Audio not found' });
+    }
+    res.status(200).json(audio);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching audio file' });
+  }
+});
+
+// Route to delete an audio file
+router.delete('/:id', async (req, res) => {
+  try {
+    const audio = await Audio.findById(req.params.id);
+    if (!audio) {
+      return res.status(404).json({ message: 'Audio not found' });
+    }
+
+    // Delete from Cloudinary
+    const publicId = audio.cloudinaryUrl.split('/').pop().split('.')[0];
+    await cloudinary.uploader.destroy(publicId, { resource_type: 'video' });
+
+    // Delete from database
+    await Audio.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: 'Audio deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error deleting audio file' });
+  }
+});
+
+// Route to update audio details
+router.put('/:id', async (req, res) => {
+  try {
+    const { title, description } = req.body;
+    const updatedAudio = await Audio.findByIdAndUpdate(
+      req.params.id,
+      { title, description },
+      { new: true }
+    );
+    
+    if (!updatedAudio) {
+      return res.status(404).json({ message: 'Audio not found' });
+    }
+    
+    res.status(200).json(updatedAudio);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error updating audio details' });
   }
 });
 
