@@ -1,7 +1,7 @@
 import { v2 as cloudinary } from 'cloudinary';
 import podcastModel from '../models/podcast.js';
 
-const addsong = async (req, res) => {
+export const addsong = async (req, res) => {
   try {
     const title = req.body.title;
     const desc = req.body.description;
@@ -32,4 +32,40 @@ const addsong = async (req, res) => {
   }
 };
 
-export default addsong;
+export const listPodcasts = async(req, res) =>{
+  try{
+    const allPodcasts = await podcastModel.find({});
+    res.json({success:true, podcasts: allPodcasts})
+  }
+
+  catch(error){
+    console.error('Error Listing the podcast', error);
+    res.status(500).json({success:false , message: 'Error listing the podcasts'})
+  }
+}
+
+export const removePodcast = async (req, res) => {
+  try {
+    const podcastId = req.body.id;  // Changed from req.params.id to req.body.id
+    
+    const deletedPodcast = await podcastModel.findByIdAndDelete(podcastId);
+
+    if (!deletedPodcast) {
+      return res.status(404).json({ success: false, message: 'Podcast not found' });
+    }
+
+    else{
+      console.log("Podcast is deleted successfully with ID:" , {podcastId})
+    }
+
+    res.status(200).json({ success: true, message: 'Podcast removed successfully' });
+  } catch (error) {
+    console.error('Error removing the podcast', error);
+    res.status(500).json({ success: false, message: 'Error removing the podcast' });
+  }
+};
+
+
+// export default {addsong, listPodcasts, removePodcast};
+// export default listPodcasts;
+// export default removePodcast;
