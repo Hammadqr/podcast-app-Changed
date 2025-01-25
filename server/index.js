@@ -8,6 +8,7 @@ import loginRoutes from './routes/login.js'; // Import login routes
 import audioRoutes from './routes/audios.js';
 import connectCloudinary from './config/cloudinary.js';  // Import the Cloudinary connection
 import podcastRoutes from './routes/podcast-route.js';
+import playlistRouter from './routes/playlist-route.js';
 
 const app = express();
 app.use(express.json());  // To parse JSON requests
@@ -38,7 +39,7 @@ app.use("/api/auth", loginRoutes); // Login route
 // app.use('/api/audios', audiosRoute);  // Ensure this line is correctly added
 app.use('/', podcastRoutes);  // Add this line to use podcast routes
 app.use('/api/audios', audioRoutes);
-
+app.use('/', playlistRouter)
 // Define routes
 app.get('/', (req, res) => {
   res.send('Portfolio Backend is Running');
